@@ -7,4 +7,38 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="dane\binary_10x10" />
+    <None Remove="dane\binary_6x6" />
+    <None Remove="dane\binary_8x8" />
+    <None Remove="dane\futoshiki_4x4" />
+    <None Remove="dane\futoshiki_5x5" />
+    <None Remove="dane\futoshiki_6x6" />
+    <None Remove="dane\README.pdf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="dane\binary_10x10">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="dane\binary_6x6">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="dane\binary_8x8">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="dane\futoshiki_4x4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="dane\futoshiki_5x5">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="dane\futoshiki_6x6">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="dane\README.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
