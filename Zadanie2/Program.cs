@@ -7,7 +7,10 @@ void TestBinary(int w, int h)
     Console.WriteLine($"Binary test for {w}x{h}");
     BinaryLoader binaryLoader = new BinaryLoader(w, h);
     Variable<short?>[,] data = binaryLoader.LoadData($"dane/binary_{w}x{h}");
-    ICSP<short?> csp = new CSPBacktracking<short?>(data, new List<IConstraint>() { new BinaryConstraint(data) });
+    ICSP<short?> csp = new CSPBacktracking<short?>(data, 
+        new List<IConstraint>() { new BinaryConstraint(data) }, 
+        new List<Func<CSPBacktracking<short?>, int, int, IConstraint>>()
+        );
     bool result = csp.FindSolution();
     if (result)
     {
@@ -35,9 +38,12 @@ void TestFutoshiki(int n)
     Console.WriteLine($"Futoshiki test for {n}x{n}");
     FutoshikiLoader futoshikiLoader = new FutoshikiLoader(n);
     (Variable<int?>[,] data, List<IConstraint> constraints) = futoshikiLoader.LoadData($"dane/futoshiki_{n}x{n}");
-    List<IConstraint> cspConstraints = new List<IConstraint>() { new FutoshikiConstraint(data) };
+    List<Func<CSPBacktracking<int?>, int, int, IConstraint>> cspFactoriesConstraints = 
+        new List<Func<CSPBacktracking<int?>, int, int, IConstraint>>() 
+        { (var, i, j) => new FutoshikiConstraint(var, i, j) };
+    List<IConstraint> cspConstraints = new List<IConstraint>();
     cspConstraints.AddRange(constraints);
-    ICSP<int?> csp = new CSPBacktracking<int?>(data, cspConstraints);
+    ICSP<int?> csp = new CSPBacktracking<int?>(data, cspConstraints, cspFactoriesConstraints);
     bool result = csp.FindSolution();
     if (result)
     {

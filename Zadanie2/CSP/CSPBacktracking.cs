@@ -11,13 +11,16 @@ namespace Zadanie2.CSP
     {
         public long Iterations { get; private set; }
         public Variable<T>[,] Variables { get; }
+        List<Func<CSPBacktracking<T>, int, int, IConstraint>> ConstraintsFactories { get; }
         List<IConstraint> Constraints { get; }
-
         public List<Variable<T>[,]> Solutions { get; }
-        public CSPBacktracking(Variable<T>[,] variables, List<IConstraint> constraints)
+        public CSPBacktracking(Variable<T>[,] variables, 
+            List<IConstraint> constraints, 
+            List<Func<CSPBacktracking<T>, int, int, IConstraint>> constraintsFactories)
         {
             Variables = variables;
             Constraints = constraints;
+            ConstraintsFactories = constraintsFactories;
             Iterations = 0;
             Solutions = new List<Variable<T>[,]>();
         }
@@ -60,7 +63,7 @@ namespace Zadanie2.CSP
             return (i, j);
         }
 
-        private bool CheckConstraints() 
+        private bool CheckConstraints(int i, int j) 
         {
             bool checkSuccess = true;
             foreach (var constraint in Constraints)
@@ -70,6 +73,18 @@ namespace Zadanie2.CSP
                 {
                     checkSuccess = false;
                     break;
+                }
+            }
+            if (checkSuccess)
+            {
+                foreach(var constraintFactory in ConstraintsFactories)
+                {
+                    bool check = constraintFactory.Invoke(this, i, j).CheckConstraint();
+                    if (!check)
+                    {
+                        checkSuccess = false;
+                        break;
+                    }
                 }
             }
             return checkSuccess;
@@ -96,7 +111,7 @@ namespace Zadanie2.CSP
             {
                 if(Variables[i, j].IsConstant && i == Variables.GetLength(0) - 1 && j == Variables.GetLength(1) - 1)
                 {
-                    bool checkSuccess = CheckConstraints();                 
+                    bool checkSuccess = CheckConstraints(i, j);                 
                     if (checkSuccess)
                     {
                         AddCurrentToSolution();
@@ -111,7 +126,7 @@ namespace Zadanie2.CSP
                 {
                     Variables[i, j].Value = Variables[i, j].CurrentDomain[0];
                     Variables[i, j].CurrentDomain.RemoveAt(0);
-                    bool checkSuccess = CheckConstraints();
+                    bool checkSuccess = CheckConstraints(i, j);
                     if (checkSuccess && i == Variables.GetLength(0) - 1 && j == Variables.GetLength(1) - 1)
                     {
                         AddCurrentToSolution();
