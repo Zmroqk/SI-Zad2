@@ -7,17 +7,24 @@ void TestBinary(int w, int h)
     Console.WriteLine($"Binary test for {w}x{h}");
     BinaryLoader binaryLoader = new BinaryLoader(w, h);
     Variable<short?>[,] data = binaryLoader.LoadData($"dane/binary_{w}x{h}");
-    CSPBacktracking<short?> csp = new CSPBacktracking<short?>(data, new List<IConstraint>() { new BinaryConstraint(data) });
+    ICSP<short?> csp = new CSPBacktracking<short?>(data, new List<IConstraint>() { new BinaryConstraint(data) });
     bool result = csp.FindSolution();
     if (result)
-        for (int i = 0; i < data.GetLength(0); i++)
+    {
+        Console.WriteLine($"Found {csp.Solutions.Count} solutions");
+        foreach (var solution in csp.Solutions)
         {
-            for (int j = 0; j < data.GetLength(1); j++)
+            for (int i = 0; i < solution.GetLength(0); i++)
             {
-                Console.Write($"{(data[i, j].Value.HasValue ? data[i, j].Value.ToString() : "x")}|");
+                for (int j = 0; j < solution.GetLength(1); j++)
+                {
+                    Console.Write($"{(solution[i, j].Value.HasValue ? solution[i, j].Value.ToString() : "x")}|");
+                }
+                Console.WriteLine();
             }
             Console.WriteLine();
         }
+    }
     else
         Console.WriteLine("No result");
     Console.WriteLine($"Iterations: {csp.Iterations}");
@@ -30,17 +37,24 @@ void TestFutoshiki(int n)
     (Variable<int?>[,] data, List<IConstraint> constraints) = futoshikiLoader.LoadData($"dane/futoshiki_{n}x{n}");
     List<IConstraint> cspConstraints = new List<IConstraint>() { new FutoshikiConstraint(data) };
     cspConstraints.AddRange(constraints);
-    CSPBacktracking<int?> csp = new CSPBacktracking<int?>(data, cspConstraints);
+    ICSP<int?> csp = new CSPBacktracking<int?>(data, cspConstraints);
     bool result = csp.FindSolution();
     if (result)
-        for (int i = 0; i < data.GetLength(0); i++)
+    {
+        Console.WriteLine($"Found {csp.Solutions.Count} solutions");
+        foreach (var solution in csp.Solutions)
         {
-            for (int j = 0; j < data.GetLength(1); j++)
+            for (int i = 0; i < solution.GetLength(0); i++)
             {
-                Console.Write($"{(data[i, j].Value.HasValue ? data[i, j].Value.ToString() : "x")}|");
+                for (int j = 0; j < solution.GetLength(1); j++)
+                {
+                    Console.Write($"{(solution[i, j].Value.HasValue ? solution[i, j].Value.ToString() : "x")}|");
+                }
+                Console.WriteLine();
             }
             Console.WriteLine();
         }
+    }
     else
         Console.WriteLine("No result");
     Console.WriteLine($"Iterations: {csp.Iterations}");

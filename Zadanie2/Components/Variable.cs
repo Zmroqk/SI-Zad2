@@ -40,6 +40,13 @@ namespace Zadanie2.Components
             IsConstant = false;
         }
 
+        public Variable(Variable<T> other){
+            Value = other.Value;
+            Domain = other.Domain.ToList();
+            CurrentDomain = other.CurrentDomain.ToList();
+            IsConstant = other.IsConstant;
+        }
+
         private T? _value;
 
         public T? Value
