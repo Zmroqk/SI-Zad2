@@ -7,9 +7,9 @@ using Zadanie2.Constraints;
 
 namespace Zadanie2.CSP
 {
-    internal interface ICSP<T>
+    internal interface ICSPTree<T>
     {
-        List<Variable<T>[,]> Solutions { get; }
+        List<List<Variable<T>>> Solutions { get; }
         long Iterations { get; }
         bool FindSolution();
     }

@@ -5,19 +5,28 @@ using System.Text;
 using System.Threading.Tasks;
 using Zadanie2.CSP;
 
-namespace Zadanie2.Components
+namespace Zadanie2.Constraints
 {
-    internal class FutoshikiConstraint : IConstraint
+    internal class FutoshikiConstraintTree : IConstraint
     {
         Variable<int?>[,] Variables { get; } 
         int I { get; }
         int J { get; }
 
-        public FutoshikiConstraint(CSPBacktracking<int?> backtracking, int i, int j)
+        public FutoshikiConstraintTree(int size, List<Variable<int?>> variables, Variable<int?> current)
         {
-            Variables = backtracking.Variables;
-            I = i;
-            J = j;
+            Variables = new Variable<int?>[size, size];
+            int index = 0;
+            for(int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    Variables[i, j] = variables[index++];
+                    if (Variables[i, j] == current)
+                    {
+                        I = i;
+                        J = j;
+                    }
+                }
+            }
         }
         public bool CheckConstraint()
         {

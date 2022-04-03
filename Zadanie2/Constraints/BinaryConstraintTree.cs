@@ -4,14 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Zadanie2.Components
+namespace Zadanie2.Constraints
 {
-    internal class BinaryConstraint : IConstraint
+    internal class BinaryConstraintTree : IConstraint
     {
-        Variable<short?>[,] Variables { get; } 
-        public BinaryConstraint(Variable<short?>[,] variables)
+        Variable<short?>[,] Variables { get; }
+
+        public BinaryConstraintTree(int width, int height, List<Variable<short?>> variables)
         {
-            Variables = variables;
+            Variables = new Variable<short?>[height, width];
+            int index = 0;
+            for (int i = 0; i < height; i++)
+            {
+                for (int j = 0; j < width; j++)
+                {
+                    Variables[i, j] = variables[index++];
+                }
+            }
         }
         public bool CheckConstraint()
         {
@@ -43,12 +52,10 @@ namespace Zadanie2.Components
             }       
             List<List<int?>> fullColumns = columns.Values.Where(column => !column.Contains(null)).ToList();
             List<List<int?>> fullRows = rows.Values.Where(row => !row.Contains(null)).ToList();
-            int columnsZeros = 0;
             for(int i = 0; i < fullColumns.Count; i++) {
                 int zeros = fullColumns[i].Where(elem => elem.Value == 0).Count();
-                if (i == 0)
-                    columnsZeros = zeros;
-                if (columnsZeros != zeros)
+                int ones = fullColumns[i].Where(elem => elem.Value == 1).Count();
+                if (zeros != ones)
                     return false;
                 for (int j = 0; j < fullColumns.Count; j++) {
                     if(i != j)
@@ -58,13 +65,11 @@ namespace Zadanie2.Components
                     }
                 }
             }
-            int rowZeros = 0;
             for (int i = 0; i < fullRows.Count; i++)
             {
                 int zeros = fullRows[i].Where(elem => elem.Value == 0).Count();
-                if (i == 0)
-                    rowZeros = zeros;
-                if (rowZeros != zeros)
+                int ones = fullRows[i].Where(elem => elem.Value == 1).Count();
+                if (zeros != ones)
                     return false;
                 for (int j = 0; j < fullRows.Count; j++)
                 {

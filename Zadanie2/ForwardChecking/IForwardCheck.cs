@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Zadanie2.Components
+namespace Zadanie2.ForwardChecking
 {
-    internal interface IConstraint
+    internal interface IForwardCheck
     {
-        public bool CheckConstraint();
+        public bool ForwardDomainsCheck();
     }
 }

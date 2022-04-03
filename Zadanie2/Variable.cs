@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Zadanie2.Components
+namespace Zadanie2
 {
     internal class Variable<T>
     {
@@ -12,8 +12,10 @@ namespace Zadanie2.Components
         {
             Value = value;
             Domain = domain;
-            CurrentDomain = domain.ToList();
+            CurrentDomain = new List<T>();
             IsConstant = true;
+            PreviousDomains = new Stack<T[]>();
+            Visited = false;
         }
 
         public Variable(List<T> domain)
@@ -22,6 +24,8 @@ namespace Zadanie2.Components
             Domain = domain;
             CurrentDomain = domain.ToList();
             IsConstant = false;
+            PreviousDomains = new Stack<T[]>();
+            Visited = false;
         }
 
         public Variable(T value)
@@ -30,6 +34,8 @@ namespace Zadanie2.Components
             IsConstant = true;
             Domain = new List<T>();
             CurrentDomain = new List<T>();
+            PreviousDomains = new Stack<T[]>();
+            Visited = false;
         }
 
         public Variable()
@@ -38,6 +44,8 @@ namespace Zadanie2.Components
             Domain = new List<T>();
             CurrentDomain = new List<T>();
             IsConstant = false;
+            PreviousDomains = new Stack<T[]>();
+            Visited = false;
         }
 
         public Variable(Variable<T> other){
@@ -45,6 +53,8 @@ namespace Zadanie2.Components
             Domain = other.Domain.ToList();
             CurrentDomain = other.CurrentDomain.ToList();
             IsConstant = other.IsConstant;
+            PreviousDomains = new Stack<T[]>();
+            Visited = false;
         }
 
         private T? _value;
@@ -63,6 +73,8 @@ namespace Zadanie2.Components
         }
         public List<T> Domain { get; }
         public List<T> CurrentDomain { get; }
+        public Stack<T[]> PreviousDomains { get; set; }
         public bool IsConstant { get; }
+        public bool Visited { get; set; }
     }
 }

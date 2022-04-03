@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Zadanie2.Components
+namespace Zadanie2.Constraints
 {
     internal class InequalityConstraint : IConstraint
     {
-        Variable<int?> FirstVariable { get; }
-        Variable<int?> SecondVariable { get; }
+        public Variable<int?> FirstVariable { get; }
+        public Variable<int?> SecondVariable { get; }
 
         /// Futoshiki constraint requires first variable to be bigger than second variable
         public InequalityConstraint(Variable<int?> firstVariable, Variable<int?> secondVariable)

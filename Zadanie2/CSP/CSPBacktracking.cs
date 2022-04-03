@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Zadanie2.Components;
+using Zadanie2.Constraints;
+using Zadanie2.Heuristics;
 
 namespace Zadanie2.CSP
 {
@@ -11,15 +12,18 @@ namespace Zadanie2.CSP
     {
         public long Iterations { get; private set; }
         public Variable<T>[,] Variables { get; }
-        List<Func<CSPBacktracking<T>, int, int, IConstraint>> ConstraintsFactories { get; }
+        Func<List<T>, IHeuristic<T>> HeuristicFactory { get; }
+        List<Func<Variable<T>[,], int, int, IConstraint>> ConstraintsFactories { get; }
         List<IConstraint> Constraints { get; }
         public List<Variable<T>[,]> Solutions { get; }
-        public CSPBacktracking(Variable<T>[,] variables, 
-            List<IConstraint> constraints, 
-            List<Func<CSPBacktracking<T>, int, int, IConstraint>> constraintsFactories)
+        public CSPBacktracking(Variable<T>[,] variables,
+            List<IConstraint> constraints,
+            Func<List<T>, IHeuristic<T>> heuristicFactory,
+            List<Func<Variable<T>[,], int, int, IConstraint>> constraintsFactories)
         {
             Variables = variables;
             Constraints = constraints;
+            HeuristicFactory = heuristicFactory;
             ConstraintsFactories = constraintsFactories;
             Iterations = 0;
             Solutions = new List<Variable<T>[,]>();
@@ -79,7 +83,7 @@ namespace Zadanie2.CSP
             {
                 foreach(var constraintFactory in ConstraintsFactories)
                 {
-                    bool check = constraintFactory.Invoke(this, i, j).CheckConstraint();
+                    bool check = constraintFactory.Invoke(Variables, i, j).CheckConstraint();
                     if (!check)
                     {
                         checkSuccess = false;
@@ -124,8 +128,7 @@ namespace Zadanie2.CSP
                 }
                 else if(!Variables[i, j].IsConstant)
                 {
-                    Variables[i, j].Value = Variables[i, j].CurrentDomain[0];
-                    Variables[i, j].CurrentDomain.RemoveAt(0);
+                    Variables[i, j].Value = HeuristicFactory.Invoke(Variables[i, j].CurrentDomain).Evaluate();
                     bool checkSuccess = CheckConstraints(i, j);
                     if (checkSuccess && i == Variables.GetLength(0) - 1 && j == Variables.GetLength(1) - 1)
                     {

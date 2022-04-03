@@ -7,22 +7,22 @@ using Zadanie2.Constraints;
 
 namespace Zadanie2.Loaders
 {
-    internal class FutoshikiLoader : ILoader
+    internal class FutoshikiLoaderTree : ILoader
     {
         private int Size { get; }
-        public FutoshikiLoader(int n)
+        public FutoshikiLoaderTree(int n)
         {
             Size = n;
         }
 
-        public (Variable<int?>[,] data, List<InequalityConstraint> constraints) LoadData(string path)
+        public (List<Variable<int?>> data, List<InequalityConstraint> constraints) LoadData(string path)
         {
             if (!File.Exists(path))
                 throw new FileLoadException("Cannot load file. File does not exists", path);
             string[] lines = File.ReadAllLines(path);
             if (lines.GetLength(0) != Size * 2 - 1)
                 throw new InvalidDataException($"Read {lines.Length} lines from file expected {Size * 2 - 1}");
-            Variable<int?>[,] data = new Variable<int?>[Size, Size];
+            List<Variable<int?>> data = new List<Variable<int?>>(Size*Size);
             for (int i = 0; i < Size * 2 - 1; i += 2)
             {
                 for (int j = 0; j < lines[i].Length; j += 2)
@@ -34,13 +34,13 @@ namespace Zadanie2.Loaders
                         case '<':                          
                             break;
                         case 'x':
-                            data[i/2, j/2] = new Variable<int?>(Enumerable.Range(1, Size).Select(value => (int?)value).ToList());
+                            data.Add(new Variable<int?>(Enumerable.Range(1, Size).Select(value => (int?)value).ToList()));
                             break;
                         default:
-                            data[i/2, j/2] = new Variable<int?>(
+                            data.Add(new Variable<int?>(
                                 int.Parse(lines[i][j].ToString()), 
                                 Enumerable.Range(1, Size).Select(value => (int?)value).ToList()
-                                );
+                                ));
                             break;
                     }
                 }
@@ -56,15 +56,27 @@ namespace Zadanie2.Loaders
                             break;
                         case '>':
                             if (i % 2 == 0)
-                                constraints.Add(new InequalityConstraint(data[i / 2, j / 2], data[i / 2, j / 2 + 1]));
+                                constraints.Add(new InequalityConstraint(
+                                    data[i / 2 * Size + j / 2], 
+                                    data[i / 2 * Size + j / 2 + 1])
+                                    );
                             else
-                                constraints.Add(new InequalityConstraint(data[(i - 1) / 2, j], data[(i + 1) / 2, j]));
+                                constraints.Add(new InequalityConstraint(
+                                    data[(i - 1) / 2 * Size + j], 
+                                    data[(i + 1) / 2 * Size + j])
+                                    );
                             break;
                         case '<':
                             if (i % 2 == 0)
-                                constraints.Add(new InequalityConstraint(data[i / 2, j / 2 + 1], data[i / 2, j / 2]));
+                                constraints.Add(new InequalityConstraint(
+                                    data[i / 2 * Size + j / 2 + 1], 
+                                    data[i / 2 * Size + j / 2])
+                                    );
                             else
-                                constraints.Add(new InequalityConstraint(data[(i + 1) / 2, j], data[(i - 1) / 2, j]));
+                                constraints.Add(new InequalityConstraint(
+                                    data[(i + 1) / 2 * Size + j], 
+                                    data[(i - 1) / 2 * Size + j])
+                                    );
                             break;
                         default:
                             break;
