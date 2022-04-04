@@ -121,6 +121,21 @@ void TestForwardBinary(int w, int h)
     PrintResults<short?>(csp);
 }
 
+void TestNewForwardBinary(int w, int h)
+{
+    Console.WriteLine($"Binary new forawrd test for {w}x{h}");
+    BinaryLoaderTree binaryLoader = new BinaryLoaderTree(w, h);
+    List<Variable<short?>> data = binaryLoader.LoadData($"dane/binary_{w}x{h}");
+    ICSPTree<short?> csp = new ForwardCheckingTreeCSP<short?>(data,
+        new List<IConstraint>() { new BinaryConstraintTree(w, h, data) },
+        (domain) => { return new SimpleHeuristic<short?>(domain); },
+        (List<Variable<short?>> variables) => { return new SimpleChildHeuristic<short?>(w, variables); }, 
+        (variables, current) => { return new BinaryForwardCheckTree(w, variables, current); },
+        new List<Func<List<Variable<short?>>, Variable<short?>, IConstraint>>()
+        );
+    PrintResultsTree<short?>(w, csp);
+}
+
 void TestFutoshiki(int n)
 {
     Console.WriteLine($"Futoshiki test for {n}x{n}");
@@ -252,39 +267,42 @@ void TestNewForwardFutoshiki(int n)
     PrintResultsTree<int?>(n, csp);
 }
 
-//TestBinary(6, 6);
-//TestBinary(8, 8);
-//TestBinary(10, 10);
-//TestNewBinary(6, 6);
-//TestNewBinary(8, 8);
-//TestNewBinary(10, 10);
-//TestNewRandomChildBinary(6, 6);
+TestBinary(6, 6);
+TestBinary(8, 8);
+TestBinary(10, 10);
+TestNewBinary(6, 6);
+TestNewBinary(8, 8);
+TestNewBinary(10, 10);
+TestNewRandomChildBinary(6, 6);
 //TestNewRandomChildBinary(8, 8); // <- Działa długo
 //TestNewRandomChildBinary(10, 10); // <- Działa bardzo długo nie używać
-//TestBinaryRandom(6, 6);
-//TestBinaryRandom(8, 8);
-//TestBinaryRandom(10, 10);
+TestBinaryRandom(6, 6);
+TestBinaryRandom(8, 8);
+TestBinaryRandom(10, 10);
 //TestForwardBinary(6, 6); // <- Nie działa
 //TestForwardBinary(8, 8); // <- Nie działa
 //TestForwardBinary(10, 10); // <- Nie działa
-//TestFutoshiki(4);
-//TestFutoshiki(5);
-//TestFutoshiki(6);
-//TestFutoshikiRandom(4);
-//TestFutoshikiRandom(5);
-//TestFutoshikiRandom(6);
-//TestFutoshikiLast(4);
-//TestFutoshikiLast(5);
-//TestFutoshikiLast(6);
-//TestForwardFutoshiki(4);
-//TestForwardFutoshiki(5);
-//TestForwardFutoshiki(6);
+TestNewForwardBinary(6, 6);
+TestNewForwardBinary(8, 8);
+TestNewForwardBinary(10, 10);
+TestFutoshiki(4);
+TestFutoshiki(5);
+TestFutoshiki(6);
+TestFutoshikiRandom(4);
+TestFutoshikiRandom(5);
+TestFutoshikiRandom(6);
+TestFutoshikiLast(4);
+TestFutoshikiLast(5);
+TestFutoshikiLast(6);
+//TestForwardFutoshiki(4); <- Nie działa
+//TestForwardFutoshiki(5); <- Nie działa
+//TestForwardFutoshiki(6); <- Nie działa
 TestNewForwardFutoshiki(4);
 TestNewForwardFutoshiki(5);
 TestNewForwardFutoshiki(6);
-//TestNewFutoshiki(4);
-//TestNewFutoshiki(5);
-//TestNewFutoshiki(6);
-//TestNewRandomChildFutoshiki(4);
-//TestNewRandomChildFutoshiki(5);
+TestNewFutoshiki(4);
+TestNewFutoshiki(5);
+TestNewFutoshiki(6);
+TestNewRandomChildFutoshiki(4);
+TestNewRandomChildFutoshiki(5);
 //TestNewRandomChildFutoshiki(6);  // <- Działa bardzo długo nie używać
