@@ -34,7 +34,7 @@ namespace Zadanie2.CSP
             HeuristicFactoryChild = heuristicFactoryChild;
             ConstraintsFactories = constraintsFactories;
             ForwardFactory = forwardFactory;
-            Iterations = 0;
+            Iterations = 1;
             Solutions = new List<List<Variable<T>>>();
         }
 
@@ -105,7 +105,6 @@ namespace Zadanie2.CSP
                     domain.Key.CurrentDomain.AddRange(domain.Value);
                 }
             }
-            Iterations++;
         }
 
         private void FindSolutionInChild(Variable<T> newRoot)
@@ -126,6 +125,7 @@ namespace Zadanie2.CSP
             newRoot.CurrentDomain.Clear();
             newRoot.CurrentDomain.AddRange(domain);
             newRoot.Visited = false;
+            Iterations++;
             return;
         }
 
